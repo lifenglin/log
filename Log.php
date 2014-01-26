@@ -1,4 +1,5 @@
 <?php
+namespace Tofu;
 class Log
 {
     protected static function buildBacktrace()
@@ -66,22 +67,8 @@ class Log
         return true;
     }
 
-    public static function exceptionHandler(exception $objException)
+    public function init()
     {
-        $strBacktrace = self::buildBacktrace($objException->getTrace());
-        $strFile = $objException->getFile();
-        $strMessage = $objException->getMessage();
-        $strLine = $objException->getLine();
-        $strLog = sprintf("Exception: %s in %s on line %s\n%s", $strFile, $strMessage, $strLine, $strBacktrace);
-        error_log($strLog, 3, APP_EXCEPTION_LOG_PATH);
-        if (ini_get("error_reporting")) {
-            echo $strLog;
-        }
-    }
-    public static function shutdownErrorHandler()
-    {
-        if (ini_get("error_reporting")) {
-            var_dump(error_get_last());
-        }
+        set_error_handler(array('Tofu\Log', 'errorHandler'));
     }
 }
